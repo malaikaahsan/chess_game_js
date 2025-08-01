@@ -221,9 +221,8 @@ export function isPathClear(fromsquare, tosquare, squares) {
     let col = fromsquare.col + dx;
     let row = fromsquare.row + dy;
 
-
     while (col !== tosquare.col || row !== tosquare.row) {
-        const key = `${row},${col}`;
+        let key = `${row},${col}`;
         if (squares[key] && squares[key].piece) {
             return false;
         }
@@ -291,12 +290,15 @@ export function checkMate(board, color) {
             }
         }
     }
+    if (!king) {
+        return true;
+    }
 
     let inCheck = kingUnderAttack(board, color, king)
     if (!inCheck) {
         return false
     }
-    
+
     let kingSafe = kingHasEscapeMoves(board, king);
     if (kingSafe) return false;
 
@@ -316,14 +318,18 @@ function piecesSavesKing(board, color, king) {
             let fromSquare = board.squares[fromKey]
             let piece = fromSquare.piece
 
-            if (!piece || piece.color !== color || piece.type === 'king') continue
+            if (!piece || piece.color !== color || piece.type === 'king') {
+                continue
+            }
             // console.log(piece)
 
             for (let x = 0; x < 8; x++) {
                 for (let y = 0; y < 8; y++) {
                     let toKey = `${x},${y}`
                     let toSquare = board.squares[toKey]
-                    if (toSquare.piece && toSquare.piece.color === color) continue
+                    if (toSquare.piece && toSquare.piece.color === color) {
+                        continue
+                    }
                     // console.log(toSquare.piece)
 
                     let valid = false
@@ -346,17 +352,17 @@ function piecesSavesKing(board, color, king) {
                     }
 
                     if (valid) {
-                        let originalPiece = toSquare.piece;
-                        toSquare.piece = piece;
-                        fromSquare.piece = null;
+                        let originalPiece = toSquare.piece
+                        toSquare.piece = piece
+                        fromSquare.piece = null
 
-                        let stillCheck = kingUnderAttack(board, color, king);
+                        let stillCheck = kingUnderAttack(board, color, king)
 
-                        fromSquare.piece = piece;
-                        toSquare.piece = originalPiece;
+                        fromSquare.piece = piece
+                        toSquare.piece = originalPiece
 
                         if (!stillCheck) {
-                            return true;
+                            return true
                         }
 
                     }
@@ -365,41 +371,47 @@ function piecesSavesKing(board, color, king) {
         }
     }
 
-    return false;
+    return false
 }
 
 
 
-export function kingHasEscapeMoves(board, kingSquare) {
-    let king = kingSquare.piece;
+export function kingHasEscapeMoves(board, king) {
+    let kingPiece = king.piece
 
     for (let dr = -1; dr <= 1; dr++) {
         for (let dc = -1; dc <= 1; dc++) {
-            if (dr === 0 && dc === 0) continue
+            if (dr === 0 && dc === 0) {
+                continue;
+            }
 
-            let newRow = kingSquare.row + dr
-            let newCol = kingSquare.col + dc
+            let newRow = king.row + dr
+            let newCol = king.col + dc
 
-            if (newRow < 0 || newRow > 7 || newCol < 0 || newCol > 7) continue
+            if (newRow < 0 || newRow > 7 || newCol < 0 || newCol > 7) {
+                continue;
+            }
 
             let key = `${newRow},${newCol}`
-            let targetSquare = board.squares[key]
+            let toSquare = board.squares[key]
 
-            if (targetSquare.piece && targetSquare.piece.color === king.color) continue
+            if (toSquare.piece && toSquare.piece.color === kingPiece.color) {
+                continue;
+            }
 
-           
-            let originalPiece = targetSquare.piece
-            targetSquare.piece = king
-            kingSquare.piece = null
 
-            let underAttack = kingUnderAttack(board, king.color, targetSquare);
+            let originalPiece = toSquare.piece
+            toSquare.piece = kingPiece
+            king.piece = null
 
-            
-            kingSquare.piece = king
-            targetSquare.piece = originalPiece
+            let stillCheck = kingUnderAttack(board, kingPiece.color, toSquare)
 
-            if (!underAttack) {
-                return true 
+
+            king.piece = kingPiece
+            toSquare.piece = originalPiece
+
+            if (!stillCheck) {
+                return true
             }
         }
     }

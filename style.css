@@ -28,7 +28,7 @@ h1 {
     justify-content: center;
     position: relative;
     left: 35%;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.331), 0 6px 20px 0 rgba(0, 0, 0, 0.336);
 }
 
 .square {
@@ -56,17 +56,9 @@ h1 {
 }
 
 .selected {
-    outline: 2px solid gold;
+    outline: 3px solid gold;
 }
 
-.square.highlight {
-    outline: 2px solid yellow;
-    outline-offset: -2px;
-}
-
-.highlight {
-    outline: 3px solid yellow;
-}
 
 
 .captured-zone {

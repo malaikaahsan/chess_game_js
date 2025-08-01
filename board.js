@@ -87,6 +87,7 @@ class Board {
             if (this.isValid) {
                 if (clickedsquare.piece && clickedsquare.piece.color !== selectedPiece.color) {
                     clickedsquare.piece.addCapturedPiece();
+                    clickedsquare.setPiece(null);
                 }
                 clickedsquare.setPiece(selectedPiece);
                 this.selectedSquare.setPiece(null);
@@ -104,5 +105,6 @@ class Board {
         }
     }
 }
+
 
 export default Board;
