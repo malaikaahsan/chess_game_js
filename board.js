@@ -92,21 +92,17 @@ class Board {
                 this.selectedSquare.setPiece(null);
 
                 this.currentTurn = this.currentTurn === 'white' ? 'black' : 'white';
-               
+
                 if (checkMate(this, this.currentTurn)) {
                     setTimeout(() => {
                         alert(this.currentTurn + " is in checkmate! Game Over.");
                     }, 1000);
                 }
-
-                
             }
             this.selectedSquare.element.classList.remove('selected');
             this.selectedSquare = null;
         }
     }
-
-
 }
 
 export default Board;

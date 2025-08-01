@@ -296,6 +296,9 @@ export function checkMate(board, color) {
     if (!inCheck) {
         return false
     }
+    
+    let kingSafe = kingHasEscapeMoves(board, king);
+    if (kingSafe) return false;
 
 
     let canHelp = piecesSavesKing(board, color, king)
@@ -361,7 +364,47 @@ function piecesSavesKing(board, color, king) {
             }
         }
     }
+
     return false;
+}
+
+
+
+export function kingHasEscapeMoves(board, kingSquare) {
+    let king = kingSquare.piece;
+
+    for (let dr = -1; dr <= 1; dr++) {
+        for (let dc = -1; dc <= 1; dc++) {
+            if (dr === 0 && dc === 0) continue
+
+            let newRow = kingSquare.row + dr
+            let newCol = kingSquare.col + dc
+
+            if (newRow < 0 || newRow > 7 || newCol < 0 || newCol > 7) continue
+
+            let key = `${newRow},${newCol}`
+            let targetSquare = board.squares[key]
+
+            if (targetSquare.piece && targetSquare.piece.color === king.color) continue
+
+           
+            let originalPiece = targetSquare.piece
+            targetSquare.piece = king
+            kingSquare.piece = null
+
+            let underAttack = kingUnderAttack(board, king.color, targetSquare);
+
+            
+            kingSquare.piece = king
+            targetSquare.piece = originalPiece
+
+            if (!underAttack) {
+                return true 
+            }
+        }
+    }
+
+    return false
 }
 
 
