@@ -24,7 +24,6 @@ class Piece {
         img.classList.add('captured-piece');
         img.src = `chesspieces/${this.color}_${this.type}.png`;
 
-
         container.appendChild(img);
     }
 

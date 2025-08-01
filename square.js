@@ -8,6 +8,7 @@ class Square {
     constructor(row, col) {
         this.row = row;
         this.col = col;
+        this.piece = null;
         this.color = (row + col) % 2 === 0 ? 'light' : 'dark';
         this.element = this.createElement();
     }

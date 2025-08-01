@@ -56,32 +56,35 @@ h1 {
 }
 
 .selected {
-  outline: 2px solid gold;
-}
-.square.highlight {
-  outline: 2px solid yellow;
-  outline-offset: -2px;
+    outline: 2px solid gold;
 }
 
+.square.highlight {
+    outline: 2px solid yellow;
+    outline-offset: -2px;
+}
+
+.highlight {
+    outline: 3px solid yellow;
+}
 
 
 .captured-zone {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  padding: 10px;
-  min-height: 50px;
-  width: 90vw;
-  background-color: #f3f3f3;
-  border: 1px solid #ccc;
-  margin-top: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 10px;
+    min-height: 50px;
+    width: 90vw;
+    background-color: #f3f3f3;
+    border: 1px solid #ccc;
+    margin-top: 15px;
 }
 
 .captured-piece {
-  width: 30px;
-  height: 30px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-} 
-
+    width: 30px;
+    height: 30px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}

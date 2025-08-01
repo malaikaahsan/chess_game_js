@@ -1,11 +1,12 @@
 import Square from "./square.js"
-import { initialPosition, isValidMovePawn, isValidMoveRook, isValidMoveKnight, isValidMoveBishop, isValidMoveQueen, isValidMoveKing } from "./utils.js";
+import { initialPosition, isValidMovePawn, isValidMoveRook, isValidMoveKnight, isValidMoveBishop, isValidMoveQueen, isValidMoveKing, checkMate } from "./utils.js";
 import Piece from "./piece.js"
 class Board {
     container = null;
     selectedSquare = null;
     squares = {};
     currentTurn = 'white';
+    isValid = false;
 
     constructor(container) {
         this.container = container;
@@ -17,7 +18,6 @@ class Board {
                 let key = `${i},${j}`;
                 this.squares[key] = square;
                 this.container.appendChild(square.element);
-
                 if (initialPosition[key]) {
                     let { type, color } = initialPosition[key];
                     let piece = new Piece(type, color);
@@ -25,25 +25,24 @@ class Board {
                     square.element.appendChild(piece.piece);
 
                 }
-
                 square.element.addEventListener("click", () => {
                     this.handleClick(square);
                 })
             }
         }
         console.log(this.squares);
+
     }
 
 
     handleClick(clickedsquare) {
-        const clickedDOM = clickedsquare.element;
 
+        const clickedDOM = clickedsquare.element;
         if (this.selectedSquare === null) {
             if (clickedsquare.piece) {
                 if (clickedsquare.piece.color === this.currentTurn) {
                     this.selectedSquare = clickedsquare;
                     clickedDOM.classList.add("selected");
-                    this.highlightMoves(clickedsquare);
                 }
             }
         }
@@ -53,63 +52,58 @@ class Board {
 
             if (clickedsquare.piece) {
                 if (clickedsquare.piece.color === selectedPiece.color) {
-                    this.clearHighlights();
                     this.selectedSquare.element.classList.remove('selected');
                     this.selectedSquare = clickedsquare;
                     clickedsquare.element.classList.add('selected');
-                    this.highlightMoves(clickedsquare);
                     return;
-                }
-                else {
-                    clickedsquare.piece.addCapturedPiece();
                 }
             }
 
-            let isValid = false;
+
 
             switch (selectedPiece.type) {
                 case 'pawn':
-                    isValid = isValidMovePawn(this.selectedSquare, clickedsquare);
+                    this.isValid = isValidMovePawn(this.selectedSquare, clickedsquare);
                     break;
                 case 'knight':
-                    isValid = isValidMoveKnight(this.selectedSquare, clickedsquare);
+                    this.isValid = isValidMoveKnight(this.selectedSquare, clickedsquare);
                     break;
                 case 'rook':
-                    isValid = isValidMoveRook(this.selectedSquare, clickedsquare);
+                    this.isValid = isValidMoveRook(this.selectedSquare, clickedsquare, this.squares);
                     break;
                 case 'bishop':
-                    isValid = isValidMoveBishop(this.selectedSquare, clickedsquare);
+                    this.isValid = isValidMoveBishop(this.selectedSquare, clickedsquare, this.squares);
                     break;
                 case 'queen':
-                    isValid = isValidMoveQueen(this.selectedSquare, clickedsquare);
+                    this.isValid = isValidMoveQueen(this.selectedSquare, clickedsquare, this.squares);
                     break;
                 case 'king':
-                    isValid = isValidMoveKing(this.selectedSquare, clickedsquare);
+                    this.isValid = isValidMoveKing(this.selectedSquare, clickedsquare);
                     break;
                 default:
-                    isValid = false;
+                    this.isValid = false;
             }
 
-            if (isValid) {
+            if (this.isValid) {
+                if (clickedsquare.piece && clickedsquare.piece.color !== selectedPiece.color) {
+                    clickedsquare.piece.addCapturedPiece();
+                }
                 clickedsquare.setPiece(selectedPiece);
                 this.selectedSquare.setPiece(null);
-                this.currentTurn = this.currentTurn === 'white' ? 'black' : 'white';
-            }
 
-            this.clearHighlights();
+                this.currentTurn = this.currentTurn === 'white' ? 'black' : 'white';
+               
+                if (checkMate(this, this.currentTurn)) {
+                    setTimeout(() => {
+                        alert(this.currentTurn + " is in checkmate! Game Over.");
+                    }, 1000);
+                }
+
+                
+            }
             this.selectedSquare.element.classList.remove('selected');
             this.selectedSquare = null;
         }
-    }
-
-
-
-
-    highlightMoves() {
-
-    }
-    clearHighlights() {
-
     }
 
 
